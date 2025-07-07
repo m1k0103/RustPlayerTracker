@@ -1,9 +1,8 @@
-#from .RustPlayerTracker.func import getBattlemetricsUrl
+from RustPlayerTracker.func import checkIfPlayerOnServer
 from bs4 import BeautifulSoup
 import requests
 import re
 
-#battlemetrics = getBattlemetricsUrl()
 
 steamid = "76561198846204323"
 
@@ -15,7 +14,14 @@ soup = BeautifulSoup(
 
 friendsregex = re.compile(r".*selectable friend_block_v2 persona in-game")
 all_friends = soup.find_all("div", {"class":friendsregex})
-data = []
+potential_people = []
 for f in all_friends:
     f_soup = BeautifulSoup(str(f), "html.parser")
-    name = f_soup.find("div", {"class":"friend_block_content"}).text
+    name = f_soup.find("div", {"class":"friend_block_content"}).text.split("\n")[0]
+    current_game = f_soup.find("span", {"class":"friend_game_link"}).text
+    if current_game == "Rust":
+        potential_people.append([name,checkIfPlayerOnServer(name)])
+
+
+print(potential_people)
+
