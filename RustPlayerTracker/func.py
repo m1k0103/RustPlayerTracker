@@ -37,7 +37,7 @@ def setOnlineInConfig(playerName, value):
             p[1] = value
         else:
             print(f"{playerName} not found in config.")
-            break
+            
     # Dumps the newly edited config
     with open("config.yml", "w", encoding="utf-8") as newYml:
         yaml.safe_dump(newYml)    
@@ -56,17 +56,29 @@ def getTotalOnlineFromConfig():
             count += 1
     return count
 
+# Check if an indivitual player is currently playing on the set server 
+def checkIfPlayerOnServer(username):
+    allPlayers = getOnlinePlayers()
+    if username in allPlayers:
+        return True
+    else:
+        return False
+    pass
 
-# Goes through the players that are being watched, and checks if they are online.
-def initialPlayerCheck():
-    to_watch = getPlayersToWatch()
-    for p in to_watch:
-        
-        pass
-
-
+# Gets the bot token and channel ID used for sending messages to Telegram from the config file.
+def getTGConfig():
+    with open("config.yml") as cfg:
+        contents = yaml.safe_load(cfg)
+    return [contents["tgBotToken"], contents["tgChannelID"]]
 
 
 # Sends message to a telegram channel
-def sendTelegramNotification():
-    pass
+def sendTelegramNotification(message):
+    creds = getTGConfig() # index0 = token, index1 = channelID
+    data = {"chat_id":creds[1], "text":{message}}
+    r = requests.post(f"https://api.telegram.org/bot{creds[0]}/sendMessage", data=data)
+    if r.status_code == 200:
+        print("Send message successfully.")
+    else:
+        print(r.status_code, r.text)
+
