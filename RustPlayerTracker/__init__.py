@@ -15,8 +15,8 @@ players: [
 battlemetricsUrl: ""
 
 #Telegram Info
-tgBotToken: a
-tgChannelID: 1""")
+tgBotToken: 
+tgChannelID: """)
         print("Please enter information into the config.\nREQUIRED:\n - At least one player\n - Battlemetrics URL.\n - Telegram bot token\n - Telegram channel ID")
         quit()
 
