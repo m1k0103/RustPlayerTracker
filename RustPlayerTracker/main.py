@@ -30,5 +30,8 @@ def main():
         print(f"Currently online: {getTotalOnlineFromConfig()}/{len(getPlayersToWatch())}")
         telegramMessageText += f"\nCurrently online: {getTotalOnlineFromConfig()}/{len(getPlayersToWatch())}"
         sendTelegramNotification(telegramMessageText)
+
+        # Attempt to find friends of current targets that are also in the server.
+        
         
         time.sleep(60)

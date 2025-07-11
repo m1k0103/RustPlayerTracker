@@ -98,3 +98,21 @@ def sendTelegramNotification(message):
     else:
         print(r.status_code, r.text)
 
+# Gets the steam friends of a user's steamID that can be found in Rust's F7 report menu.
+def getFriends(steamid):
+    soup = BeautifulSoup(
+        requests.get(f"https://steamcommunity.com/profiles/{steamid}/friends/").text,
+        "html.parser"
+        )
+
+    friendsregex = re.compile(r".*selectable friend_block_v2 persona in-game")
+    all_friends = soup.find_all("div", {"class":friendsregex})
+    potential_people = []
+    for f in all_friends:
+        f_soup = BeautifulSoup(str(f), "html.parser")
+        name = f_soup.find("div", {"class":"friend_block_content"}).text.split("\n")[0]
+        current_game = f_soup.find("span", {"class":"friend_game_link"}).text
+        if current_game == "Rust":
+            potential_people.append([name,checkIfPlayerOnServer(name)])
+    
+    return potential_people
