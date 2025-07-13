@@ -116,3 +116,22 @@ def getFriends(steamid):
             potential_people.append([name,checkIfPlayerOnServer(name)])
     
     return potential_people
+
+# Resolves the ID shown in Rust's F7 report menu to a steam username
+def resolveF7ID(id):
+    resp = requests.get(f"https://steamcommunity.com/profiles/{id}").text
+    soup = BeautifulSoup(resp, "html.parser")
+    username = soup.find("span", {"class":"actual_persona_name"}).text
+    return username
+    
+
+# Adds a new player to the config
+def addPlayerToConfig(playerName):
+    # Gets the current config data and appends new player to the list
+    with open("config.yml", "r") as yml:
+        contents = yaml.load(yml)
+    contents["players"].append([playerName, 0])
+    
+    # Writes new config
+    with open("config.yml", "w") as newYml:
+        yaml.dump(contents, newYml)

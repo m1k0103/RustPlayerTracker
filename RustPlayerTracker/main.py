@@ -2,15 +2,30 @@ from RustPlayerTracker.func import *
 import time
 import os
 
-# sets the players that will be monitored
+
 
 def main():
     
     playersToTrack = getPlayersToWatch()
 
+    # If not players in config.
+    if playersToTrack == "":
+        sid = input("Please enter a username into the config file, or enter a steamID here (type 'c' to cancel): ")
+        if sid == "c":
+            quit()
+        name = resolveF7ID(sid)
+        addPlayerToConfig(name)
+        friends = getFriends(sid)
+        for f in friends:
+            addPlayerToConfig(f)
+        print(f"All of {name}({sid}) friends added to config.")
+
+       
+
     # main loop
     while True:
         os.system("cls")
+        
         # finds the names of all players using a regex pattern on all anchor tags
         allPlayerNames = getOnlinePlayers()
 
@@ -31,7 +46,6 @@ def main():
         telegramMessageText += f"\nCurrently online: {getTotalOnlineFromConfig()}/{len(getPlayersToWatch())}"
         sendTelegramNotification(telegramMessageText)
 
-        # Attempt to find friends of current targets that are also in the server.
-        
-        
-        time.sleep(60)
+        # Waits 5 minutes to avoid rate limits.
+        # Can be adjusted.
+        time.sleep(300)
